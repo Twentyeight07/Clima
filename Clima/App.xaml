@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Clima.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <OnPlatform x:TypeArguments="x:String" 
+                        x:Key="FontAwesomeBrands">
+                <On Platform="Android" 
+                    Value="FontAwesome6BrandsRegular400.otf#Brands"/>
+                <On Platform="iOS" 
+                    Value="FontAwesome6BrandsRegular400"/>
+            </OnPlatform>
+            
+            <OnPlatform x:TypeArguments="x:String" 
+                        x:Key="FontAwesomeRegular">
+                <On Platform="Android"
+                    Value="FontAwesome6FreeRegular400.otf#Regular" />
+                <On Platform="iOS"
+                    Value="FontAwesome6FreeRegular400" />
+            </OnPlatform>
+            
+            <OnPlatform x:TypeArguments="x:String"
+                        x:Key="FontAwesomeSolid">
+                <On Platform="Android"
+                    Value="FontAwesome6FreeSolid900.otf#Solid" />
+                <On Platform="iOS"
+                    Value="FontAwesome6FreeSolid900" />
+            </OnPlatform>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

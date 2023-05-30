@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Clima.Views.Main_Menu.Header">
+    <Grid Padding="10"
+          BackgroundColor="#36363E">
+        <StackLayout HorizontalOptions="FillAndExpand">
+            <Frame BackgroundColor="#3B3B3B"
+                   HasShadow="False"
+                   CornerRadius="10">
+                <StackLayout Orientation="Horizontal"
+                             Spacing="10">
+                    <Label Text="&#xf002;"
+                           FontFamily="{StaticResource FontAwesomeSolid}"
+                           FontSize="15"
+                           VerticalOptions="Center"
+                           TextColor="#E8E8E8" />
+                    <Entry VerticalOptions="FillAndExpand"
+                           HorizontalOptions="FillAndExpand"
+                           TextColor="White"
+                           PlaceholderColor="Gray"
+                           Placeholder="Busca una ciudad"/>
+                </StackLayout>
+            </Frame>
+            <StackLayout Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         Spacing="100">
+                <Label Text="Hoy"
+                       FontAttributes="Bold"
+                       TextColor="#E3E3E3"
+                       Grid.Column="0"
+                       FontSize="20"
+                       HorizontalOptions="Center" />
+                <Label Text="Mañana"
+                       FontAttributes="Bold"
+                       TextColor="#E3E3E3"
+                       Grid.Column="2"
+                       FontSize="20"
+                       HorizontalOptions="Center" />
+            </StackLayout>
+        </StackLayout>
+    </Grid>
+</ContentView>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Clima.Views.Main_Menu.Footer">
+    <StackLayout Orientation="Horizontal"
+                 Padding="10"
+                 BackgroundColor="#C1C1C1"
+                 Opacity="0.8">
+        <Label Text="&#xf0e9;"
+               FontFamily="{StaticResource FontAwesomeSolid}"
+               FontSize="15"
+               VerticalOptions="Center"
+               TextColor="#E8E8E8"/>
+        <Label Text="Probabilidades de precipitaciones hoy: 20%"
+               FontSize="18"
+               VerticalOptions="Center"
+               TextColor="#E8E8E8"
+               FontAttributes="Bold"/>
+    </StackLayout>
+</ContentView>
