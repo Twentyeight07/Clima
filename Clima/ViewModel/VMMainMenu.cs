@@ -10,7 +10,7 @@ namespace Clima.ViewModel
     internal class VMMainMenu : ViewModelBase
     {
         #region VARIABLES
-        string _Texto;
+        string _Ciudad;
         string _DateTime;
         #endregion
         #region CONSTRUCTOR
@@ -21,10 +21,10 @@ namespace Clima.ViewModel
         }
         #endregion
         #region OBJETOS
-        public string Texto
+        public string Ciudad
         {
-            get { return _Texto; }
-            set { SetValue(ref _Texto, value); }
+            get { return _Ciudad; }
+            set { SetValue(ref _Ciudad, value); }
         }
         public string Datetime
         {

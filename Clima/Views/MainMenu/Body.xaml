@@ -2,14 +2,42 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.Main_Menu.Body">
-    <Grid BackgroundColor="LightBlue"
-          VerticalOptions="CenterAndExpand">
+    <Grid RowSpacing="0">
+        <Image HorizontalOptions="FillAndExpand"
+               VerticalOptions="FillAndExpand"
+               Aspect="AspectFill"
+               Source="Lluvia.jpg" />
         <StackLayout Orientation="Vertical"
                      Padding="10">
-            <Label Text="Hola"
-                   FontSize="Large" />
-            <Label Text="Prueba"
-                   FontSize="30" />
+            <Label Text="{Binding Datetime}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start" />
+            <StackLayout Orientation="Horizontal">
+                <Label Text="32º de día ↑"
+                       TextColor="White"
+                       VerticalOptions="Center" />
+                <Label Text=" • "
+                       TextColor="White"
+                       FontSize="20"
+                       VerticalOptions="Center" />
+                <Label Text="22º de noche ↓"
+                       TextColor="White"
+                       VerticalOptions="Center" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="23º"
+                       FontSize="70"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                <Image Source="rainyDay.png"
+                       HeightRequest="90" />
+            </StackLayout>
+            <Label Text="Sensación térmica de 29º" 
+                   TextColor="White"
+                   FontSize="15"/>
         </StackLayout>
     </Grid>
 </ContentView>

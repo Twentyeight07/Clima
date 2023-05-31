@@ -3,9 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.Main_Menu.MainMenu"
              xmlns:Views="clr-namespace:Clima.Views.Main_Menu">
-    <Grid>
-        <Views:Header VerticalOptions="Start"/>
-        <Views:Body />
-        <Views:Footer VerticalOptions="End"/>
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Views:Header VerticalOptions="Start"
+                      Grid.Row="0" 
+                      Margin="0"/>
+        <Views:Body VerticalOptions="FillAndExpand"
+                    Grid.Row="1" 
+                    Margin="0"/>
+        
     </Grid>
 </ContentPage>

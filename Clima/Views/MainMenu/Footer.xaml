@@ -10,11 +10,11 @@
                FontFamily="{StaticResource FontAwesomeSolid}"
                FontSize="15"
                VerticalOptions="Center"
-               TextColor="#E8E8E8"/>
+               TextColor="White"/>
         <Label Text="Probabilidades de precipitaciones hoy: 20%"
                FontSize="18"
                VerticalOptions="Center"
-               TextColor="#E8E8E8"
+               TextColor="White"
                FontAttributes="Bold"/>
     </StackLayout>
 </ContentView>

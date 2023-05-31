@@ -2,42 +2,49 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.Main_Menu.Header">
-    <Grid Padding="10"
-          BackgroundColor="#36363E">
-        <StackLayout HorizontalOptions="FillAndExpand">
-            <Frame BackgroundColor="#3B3B3B"
-                   HasShadow="False"
-                   CornerRadius="10">
-                <StackLayout Orientation="Horizontal"
-                             Spacing="10">
-                    <Label Text="&#xf002;"
-                           FontFamily="{StaticResource FontAwesomeSolid}"
-                           FontSize="15"
-                           VerticalOptions="Center"
-                           TextColor="#E8E8E8" />
-                    <Entry VerticalOptions="FillAndExpand"
-                           HorizontalOptions="FillAndExpand"
-                           TextColor="White"
-                           PlaceholderColor="Gray"
-                           Placeholder="Busca una ciudad"/>
-                </StackLayout>
-            </Frame>
-            <StackLayout Orientation="Horizontal"
-                         HorizontalOptions="Center"
-                         Spacing="100">
-                <Label Text="Hoy"
-                       FontAttributes="Bold"
-                       TextColor="#E3E3E3"
-                       Grid.Column="0"
-                       FontSize="20"
-                       HorizontalOptions="Center" />
-                <Label Text="Mañana"
-                       FontAttributes="Bold"
-                       TextColor="#E3E3E3"
-                       Grid.Column="2"
-                       FontSize="20"
-                       HorizontalOptions="Center" />
+    <Grid BackgroundColor="#434343"
+          HeightRequest="140">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <Frame BackgroundColor="#686868"
+               HasShadow="False"
+               CornerRadius="10"
+               Grid.Row="0"
+               Margin="10,5,10,0">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="&#xf002;"
+                       FontFamily="{StaticResource FontAwesomeSolid}"
+                       FontSize="15"
+                       VerticalOptions="Center"
+                       TextColor="#E8E8E8" />
+                <Entry HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"
+                       Placeholder="Busca por ciudad"
+                       PlaceholderColor="#E8E8E8"
+                       TextColor="#E8E8E8"
+                       Keyboard="Text" 
+                       />
             </StackLayout>
+        </Frame>
+        <StackLayout Orientation="Horizontal"
+                     Grid.Row="1"
+                     HorizontalOptions="Center"
+                     Spacing="250">
+            <Label Text="Hoy"
+                   FontAttributes="Bold"
+                   TextColor="#DBDBDB"
+                   FontSize="25"
+                   VerticalOptions="Center"
+                   TextDecorations="Underline"
+                   x:Name="lblToday"/>
+            <Label Text="Mañana"
+                   FontAttributes="Bold"
+                   TextColor="#DBDBDB"
+                   FontSize="25"
+                   VerticalOptions="Center" 
+                   x:Name="lblTomorrow"/>
         </StackLayout>
     </Grid>
 </ContentView>
