@@ -5,7 +5,7 @@
              xmlns:Views="clr-namespace:Clima.Views.Main_Menu">
     <Grid RowSpacing="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="140" />
+            <RowDefinition Height="150" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Views:Header VerticalOptions="Start"

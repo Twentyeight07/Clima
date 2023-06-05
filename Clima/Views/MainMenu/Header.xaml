@@ -3,16 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.Main_Menu.Header">
     <Grid BackgroundColor="#434343"
-          HeightRequest="140">
+          HeightRequest="150">
         <Grid.RowDefinitions>
             <RowDefinition Height="90" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Frame BackgroundColor="#686868"
                HasShadow="False"
                CornerRadius="10"
                Grid.Row="0"
-               Margin="10,5,10,0">
+               Margin="10,5,10,0"
+               Padding="15,5">
             <StackLayout Orientation="Horizontal">
                 <Label Text="&#xf002;"
                        FontFamily="{StaticResource FontAwesomeSolid}"
@@ -28,23 +29,33 @@
                        />
             </StackLayout>
         </Frame>
-        <StackLayout Orientation="Horizontal"
-                     Grid.Row="1"
-                     HorizontalOptions="Center"
-                     Spacing="250">
-            <Label Text="Hoy"
-                   FontAttributes="Bold"
-                   TextColor="#DBDBDB"
-                   FontSize="25"
-                   VerticalOptions="Center"
-                   TextDecorations="Underline"
-                   x:Name="lblToday"/>
-            <Label Text="Mañana"
-                   FontAttributes="Bold"
-                   TextColor="#DBDBDB"
-                   FontSize="25"
-                   VerticalOptions="Center" 
-                   x:Name="lblTomorrow"/>
-        </StackLayout>
+        <ScrollView Grid.Row="1"
+                    x:Name="forecastDay">
+            <StackLayout BindableLayout.ItemsSource="{Binding Categories}"
+                         Orientation="Horizontal">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="10"
+                               HasShadow="False"
+                               BackgroundColor="{Binding BackgroundColor}"
+                               HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="Center"
+                               Padding="10,4"
+                               Margin="0,0,0,5">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Path=BindingContext.Selectcommand,Source={x:Reference forecastDay}}"
+                                                      CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            <Label Text="{Binding Day}"
+                               FontAttributes="Bold"
+                               TextColor="#DBDBDB"
+                               FontSize="25"
+                               HorizontalOptions="CenterAndExpand"/>
+                        </Frame>
+                        
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
     </Grid>
 </ContentView>
