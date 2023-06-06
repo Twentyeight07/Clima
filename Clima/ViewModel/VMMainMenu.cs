@@ -23,8 +23,8 @@ namespace Clima.ViewModel
         public VMMainMenu(INavigation navigation)
         {
             Navigation = navigation;
-            _DateTime = DateTime.Now.ToString();
             ListCategories();
+            SetDateTime("Hoy");
         }
         #endregion
         #region OBJETOS
@@ -41,6 +41,7 @@ namespace Clima.ViewModel
         public string Datetime
         {
             get { return _DateTime; }
+            set { SetValue(ref _DateTime, value); }
         }
         #endregion
         #region PROCESOS
@@ -63,6 +64,7 @@ namespace Clima.ViewModel
                 DeSelect();
                 Categories[index].Selected = true;
                 Categories[index].BackgroundColor = "#686868";
+                SetDateTime(Categories[index].Day);
             }
         }
         private void DeSelect()
@@ -74,9 +76,16 @@ namespace Clima.ViewModel
                 item.BackgroundColor = "Transparent";
             });
         }
-        public void ProcesoSimple()
+        private void SetDateTime(string day)
         {
-            
+            if (day == "Mañana")
+            {
+                Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
+            }
+            else
+            {
+                Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
+            }
         }
         #endregion
         #region COMANDOS
