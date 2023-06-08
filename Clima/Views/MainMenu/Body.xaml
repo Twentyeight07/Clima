@@ -2,42 +2,65 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.Main_Menu.Body">
-    <Grid RowSpacing="0">
+    <Grid RowDefinitions="40,*"
+          RowSpacing="0">
         <Image HorizontalOptions="FillAndExpand"
                VerticalOptions="FillAndExpand"
                Aspect="AspectFill"
-               Source="Lluvia.jpg" />
-        <StackLayout Orientation="Vertical"
-                     Padding="10">
-            <Label Text="{Binding Datetime}"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Start" />
-            <StackLayout Orientation="Horizontal">
-                <Label Text="32º de día ↑"
-                       TextColor="White"
-                       VerticalOptions="Center" />
-                <Label Text=" • "
-                       TextColor="White"
-                       FontSize="20"
-                       VerticalOptions="Center" />
-                <Label Text="22º de noche ↓"
-                       TextColor="White"
-                       VerticalOptions="Center" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="23º"
-                       FontSize="70"
-                       FontAttributes="Bold"
-                       TextColor="White" />
-                <Image Source="rainyDay.png"
-                       HeightRequest="90" />
-            </StackLayout>
-            <Label Text="Sensación térmica de 29º" 
-                   TextColor="White"
-                   FontSize="15"/>
+               Source="{Binding Wallpaper}"
+               Grid.RowSpan="2" />
+        <Label Text="{Binding Datetime}"
+               Margin="10,0,0,0"
+               FontSize="20"
+               FontAttributes="Bold"
+               TextColor="White"
+               VerticalOptions="Center"
+               HorizontalOptions="Start" 
+               Grid.Row="0"/>
+        <StackLayout BindableLayout.ItemsSource="{Binding Weater}"
+                     Orientation="Vertical"
+                     Padding="10"
+                     Grid.Row="1">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding MaxTemp, StringFormat='{0}º'}"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   VerticalOptions="Center" />
+                            <Label Text="de día ↑"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   VerticalOptions="Center"
+                                   Margin="0"/>
+                            <Label Text=" • "
+                                   TextColor="White"
+                                   FontSize="20"
+                                   VerticalOptions="Center" />
+                            <Label Text="{Binding MinTemp, StringFormat='{0}º'}"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   VerticalOptions="Center" />
+                            <Label Text="de noche ↓"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding CurrentTemp, StringFormat='{0}º'}"
+                                   FontSize="70"
+                                   FontAttributes="Bold"
+                                   TextColor="White" />
+                            <Image Source="{Binding Icon}"
+                                   HeightRequest="90" />
+                        </StackLayout>
+                        <Label Text="{Binding FeelsLike, StringFormat='Sensación térmica de {0}º'}"
+                               TextColor="White"
+                               FontSize="15" />
+                    </StackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
         </StackLayout>
     </Grid>
 </ContentView>

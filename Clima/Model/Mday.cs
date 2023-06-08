@@ -8,7 +8,7 @@ namespace Clima.Model
     public class Mday:ViewModelBase
     {
         public string Day { get; set; }
-        //Objetos
+        //Objects
         string _BackgroundColor;
         bool _Selected;
         public bool Selected
