@@ -2,19 +2,26 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.Main_Menu.Footer">
-    <StackLayout Orientation="Horizontal"
+    <StackLayout BindableLayout.ItemsSource="{Binding Weater}" 
+                 Orientation="Horizontal"
                  Padding="10"
                  BackgroundColor="#C1C1C1"
                  Opacity="0.8">
-        <Label Text="&#xf0e9;"
-               FontFamily="{StaticResource FontAwesomeSolid}"
-               FontSize="15"
-               VerticalOptions="Center"
-               TextColor="White"/>
-        <Label Text="Probabilidades de precipitaciones hoy: 20%"
-               FontSize="18"
-               VerticalOptions="Center"
-               TextColor="White"
-               FontAttributes="Bold"/>
+        <BindableLayout.ItemTemplate>
+            <DataTemplate>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="&#xf0e9;"
+                           FontFamily="{StaticResource FontAwesomeSolid}"
+                           FontSize="15"
+                           VerticalOptions="Center"
+                           TextColor="White" />
+                    <Label Text="{Binding ChanceOfRain, StringFormat='Probabilidades de precipitaciones hoy {0}%'}"
+                           FontSize="18"
+                           VerticalOptions="Center"
+                           TextColor="White"
+                           FontAttributes="Bold" />
+                </StackLayout>
+            </DataTemplate>
+        </BindableLayout.ItemTemplate>
     </StackLayout>
 </ContentView>

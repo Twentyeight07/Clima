@@ -7,15 +7,19 @@ namespace Clima.Model
 {
     public class MWeater:ViewModelBase
     {
-        public string City { get; set; }
-
-        //Objects
+        // Objects
         string _CurrentTemp;
         string _FeelsLike;
         string _MaxTemp;
         string _MinTemp;
         string _ChanceOfRain;
         string _Icon;
+        // Next day forecast
+        string _TCurrentTemp;
+        string _TFeelsLike;
+        string _TMaxTemp;
+        string _TMinTemp;
+        string _TChanceOfRain;
         public string CurrentTemp
         {
             get { return _CurrentTemp; }

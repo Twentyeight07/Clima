@@ -14,6 +14,8 @@
         <Views:Body VerticalOptions="FillAndExpand"
                     Grid.Row="1" 
                     Margin="0"/>
-        
+        <Views:Footer VerticalOptions="End"
+                      Grid.Row="1"
+                      Margin="0"/>
     </Grid>
 </ContentPage>

@@ -22,7 +22,7 @@
                        TextColor="#E8E8E8" />
                 <Entry HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
-                       Placeholder="Busca por ciudad"
+                       Placeholder="{Binding City}"
                        PlaceholderColor="#E8E8E8"
                        TextColor="#E8E8E8"
                        Keyboard="Text" 

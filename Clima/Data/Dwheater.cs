@@ -14,7 +14,6 @@ namespace Clima.Data
             {
                 new MWeater()
                 {
-                    City="",
                     CurrentTemp = "",
                     FeelsLike ="",
                     MaxTemp ="",
