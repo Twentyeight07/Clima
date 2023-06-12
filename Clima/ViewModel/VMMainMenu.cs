@@ -104,21 +104,42 @@ namespace Clima.ViewModel
         }
         private async void SetDateTime(string day)
         {
-            var request = new GeolocationRequest(GeolocationAccuracy.Medium);
-            var location = await Geolocation.GetLocationAsync(request);
-
-            string latitude = location.Latitude.ToString().Replace(",", ".");
-            string longitude = location.Longitude.ToString().Replace(",", ".");
-
-            if (day == "Mañana")
+            try
             {
-                Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                GetWeater(latitude, longitude);
+                var request = new GeolocationRequest(GeolocationAccuracy.Medium);
+                var location = await Geolocation.GetLocationAsync(request);
+
+                string latitude = location.Latitude.ToString().Replace(",", ".");
+                string longitude = location.Longitude.ToString().Replace(",", ".");
+
+                if (day == "Mañana")
+                {
+                    Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
+                    GetWeater(latitude, longitude);
+                }
+                else
+                {
+                    Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
+                    GetWeater(latitude, longitude);
+                }
             }
-            else
+            catch(FeatureNotEnabledException)
             {
-                Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                GetWeater(latitude, longitude);
+                if (day == "Mañana")
+                {
+                    Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
+                    GetWeater("", "");
+                }
+                else
+                {
+                    Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
+                    GetWeater("", "");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
         }
 
