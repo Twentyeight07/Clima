@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Clima.Views.Main_Menu.Footer">
+             x:Class="Clima.Views.MainMenu.Footer">
     <StackLayout BindableLayout.ItemsSource="{Binding Weater}" 
                  Orientation="Horizontal"
                  Padding="10"

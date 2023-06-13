@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Clima.Views.Main_Menu
+namespace Clima.Views.MainMenu
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Footer : ContentView

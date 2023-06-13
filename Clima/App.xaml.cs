@@ -1,7 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Clima.Views.Main_Menu;
+using Clima.Views.MainMenu;
 
 namespace Clima
 {

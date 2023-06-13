@@ -33,7 +33,6 @@ namespace Clima.ViewModel
             Navigation = navigation;
             ListCategories();
             SetDateTime("Hoy");
-            //GetLocation();
             ListWeater();
         }
         #endregion
@@ -197,7 +196,7 @@ namespace Clima.ViewModel
                 string aqi = "no";
                 string alerts = "no";
 
-                string apiUrl = string.Format("http://api.weatherapi.com/v1/forecast.json?key={0}&q={1}&days={2}&aqi={3}&alerts={4}", apiKey, location, numberOfDays, aqi, alerts);
+                string apiUrl = string.Format("https://api.weatherapi.com/v1/forecast.json?key={0}&q={1}&days={2}&aqi={3}&alerts={4}", apiKey, location, numberOfDays, aqi, alerts);
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(apiUrl);
@@ -667,7 +666,7 @@ namespace Clima.ViewModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al procesar la solicitud HTTP: " + ex.Message);
+                throw;
             }
         }
 
