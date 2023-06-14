@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Clima.Views.MainMenu.Header">
+             x:Class="Clima.Views.MainMenu.Header"
+             xmlns:toolkit="http://xamarin.com/schemas/2020/toolkit">
     <Grid BackgroundColor="#434343"
           HeightRequest="150">
         <Grid.RowDefinitions>
@@ -15,18 +16,14 @@
                Margin="10,5,10,0"
                Padding="15,5">
             <StackLayout Orientation="Horizontal">
-                <Label Text="&#xf002;"
-                       FontFamily="{StaticResource FontAwesomeSolid}"
-                       FontSize="15"
-                       VerticalOptions="Center"
-                       TextColor="#E8E8E8" />
-                <Entry HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
-                       Placeholder="{Binding City}"
-                       PlaceholderColor="#E8E8E8"
-                       TextColor="#E8E8E8"
-                       Keyboard="Text" 
-                       />
+                <SearchBar HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"
+                           Placeholder="{Binding City}"
+                           PlaceholderColor="#E8E8E8"
+                           TextColor="#E8E8E8"
+                           Keyboard="Text" 
+                           Text="{Binding CitySearched}"
+                           SearchCommand="{Binding Searchcommand}"/>
             </StackLayout>
         </Frame>
         <ScrollView Grid.Row="1"

@@ -22,6 +22,7 @@ namespace Clima.ViewModel
     {
         #region VARIABLES
         string _City;
+        string _CitySearched;
         string _DateTime;
         string _Wallpaper;
         ObservableCollection<Mday> _Categories;
@@ -62,7 +63,12 @@ namespace Clima.ViewModel
             get { return _City; }
             set { SetValue(ref _City, value); }
         }
-        
+        public string CitySearched
+        {
+            get { return _CitySearched; }
+            set { SetValue(ref _CitySearched, value); }
+        }
+
         #endregion
         #region PROCESOS
         public async Task ProcesoAsyncrono()
@@ -114,12 +120,12 @@ namespace Clima.ViewModel
                 if (day == "Mañana")
                 {
                     Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                    GetWeater(latitude, longitude);
+                    GetWeater(latitude, longitude,"");
                 }
                 else
                 {
                     Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                    GetWeater(latitude, longitude);
+                    GetWeater(latitude, longitude,"");
                 }
             }
             catch(FeatureNotEnabledException)
@@ -127,15 +133,15 @@ namespace Clima.ViewModel
                 if (day == "Mañana")
                 {
                     Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                    GetWeater("", "");
+                    GetWeater("", "","");
                 }
                 else
                 {
                     Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                    GetWeater("", "");
+                    GetWeater("", "","");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -157,7 +163,7 @@ namespace Clima.ViewModel
                 }
                 else
                 {
-                    GetWeater("", "");
+                    GetWeater("", "", "");
                 }
             }
             catch (Exception ex)
@@ -182,14 +188,21 @@ namespace Clima.ViewModel
             }
 
         }
-        private async void GetWeater(string latitude, string longitude)
+        private async void GetWeater(string latitude, string longitude, string citySearched)
         {
             try
             {
                 string location = latitude + "," + longitude;
                 if(latitude == "" || longitude == "")
                 {
-                    location = "Caracas";
+                    if(citySearched == "")
+                    {
+                        location = "Caracas";
+                    }
+                    else
+                    {
+                        location = citySearched;
+                    }
                 }
                 string apiKey = "96d613ae09f948fdbc1183533233105";
                 int numberOfDays = 2;
@@ -664,15 +677,19 @@ namespace Clima.ViewModel
                     Console.WriteLine("Error en la respuesta HTTP: " + response.StatusCode);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
-
+        public void Search()
+        {
+            GetWeater("", "", CitySearched);
+        }
         #endregion
         #region COMANDOS
         public ICommand ProcesoAsyncommand => new Command(async () => await ProcesoAsyncrono());
+        public ICommand Searchcommand => new Command(Search);
         public ICommand Selectcommand => new Command<Mday>(Select);
         #endregion
     }
