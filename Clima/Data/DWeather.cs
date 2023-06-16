@@ -6,13 +6,13 @@ using System.Text;
 
 namespace Clima.Data
 {
-    public class DWeater
+    public class DWeather
     {
-        public ObservableCollection<MWeater> ShowWeater()
+        public ObservableCollection<MWeather> ShowWeather()
         {
-            return new ObservableCollection<MWeater>()
+            return new ObservableCollection<MWeather>()
             {
-                new MWeater()
+                new MWeather()
                 {
                     CurrentTemp = "",
                     FeelsLike ="",

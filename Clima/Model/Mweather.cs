@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Clima.Model
 {
-    public class MWeater:ViewModelBase
+    public class MWeather:ViewModelBase
     {
         // Objects
         string _CurrentTemp;
@@ -14,12 +14,6 @@ namespace Clima.Model
         string _MinTemp;
         string _ChanceOfRain;
         string _Icon;
-        // Next day forecast
-        string _TCurrentTemp;
-        string _TFeelsLike;
-        string _TMaxTemp;
-        string _TMinTemp;
-        string _TChanceOfRain;
         public string CurrentTemp
         {
             get { return _CurrentTemp; }

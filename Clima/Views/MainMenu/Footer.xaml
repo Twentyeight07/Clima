@@ -2,7 +2,7 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Clima.Views.MainMenu.Footer">
-    <StackLayout BindableLayout.ItemsSource="{Binding Weater}" 
+    <StackLayout BindableLayout.ItemsSource="{Binding Weather}" 
                  Orientation="Horizontal"
                  Padding="10"
                  BackgroundColor="#C1C1C1"

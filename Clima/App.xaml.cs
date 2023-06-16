@@ -2,6 +2,8 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Clima.Views.MainMenu;
+using Plugin.LocalNotification;
+using Clima.ViewModel;
 
 namespace Clima
 {
@@ -12,7 +14,9 @@ namespace Clima
             InitializeComponent();
 
             MainPage = new MainMenu();
+
         }
+
 
         protected override void OnStart()
         {

@@ -17,7 +17,7 @@
                VerticalOptions="Center"
                HorizontalOptions="Start" 
                Grid.Row="0"/>
-        <StackLayout BindableLayout.ItemsSource="{Binding Weater}"
+        <StackLayout BindableLayout.ItemsSource="{Binding Weather}"
                      Orientation="Vertical"
                      Padding="10"
                      Grid.Row="1">

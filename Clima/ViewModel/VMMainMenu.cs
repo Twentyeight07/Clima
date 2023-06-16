@@ -15,6 +15,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Essentials;
 using System.Globalization;
+using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
+using Plugin.LocalNotification.EventArgs;
 
 namespace Clima.ViewModel
 {
@@ -25,8 +28,9 @@ namespace Clima.ViewModel
         string _CitySearched;
         string _DateTime;
         string _Wallpaper;
+        string _TomorrowChanceOfRain;
         ObservableCollection<Mday> _Categories;
-        ObservableCollection<MWeater> _Weater;
+        ObservableCollection<MWeather> _Weather;
         #endregion
         #region CONSTRUCTOR
         public VMMainMenu(INavigation navigation)
@@ -34,8 +38,11 @@ namespace Clima.ViewModel
             Navigation = navigation;
             ListCategories();
             SetDateTime("Hoy");
-            ListWeater();
+            ListWeather();
+            ScheduleNotification();
         }
+
+
         #endregion
         #region OBJETOS
         public ObservableCollection<Mday> Categories
@@ -43,10 +50,10 @@ namespace Clima.ViewModel
             get { return _Categories; }
             set { SetValue(ref _Categories, value); }
         }
-        public ObservableCollection<MWeater> Weater
+        public ObservableCollection<MWeather> Weather
         {
-            get { return _Weater; }
-            set { SetValue(ref _Weater, value); }
+            get { return _Weather; }
+            set { SetValue(ref _Weather, value); }
         }
         public string Datetime
         {
@@ -68,7 +75,18 @@ namespace Clima.ViewModel
             get { return _CitySearched; }
             set { SetValue(ref _CitySearched, value); }
         }
-
+        public string TomorrowChanceOfRain
+        {
+            get { return _TomorrowChanceOfRain; }
+            set { SetValue(ref _TomorrowChanceOfRain, value); }
+        }
+        public class NotificationPerms : Xamarin.Essentials.Permissions.BasePlatformPermission
+        {
+            public (string androidPermission, bool isRuntime)[] RequiredPermissions => new List<(string androidPermission, bool isRuntime)>
+        {
+        ("android.permission.POST_NOTIFICATIONS", true),
+        }.ToArray();
+        }
         #endregion
         #region PROCESOS
         public async Task ProcesoAsyncrono()
@@ -80,10 +98,10 @@ namespace Clima.ViewModel
             var function = new Dday();
             Categories = function.ShowDays();
         }
-        public void ListWeater()
+        public void ListWeather()
         {
-            var function = new DWeater();
-            Weater = function.ShowWeater();
+            var function = new DWeather();
+            Weather = function.ShowWeather();
         }
         private void Select(Mday param)
         {
@@ -120,25 +138,25 @@ namespace Clima.ViewModel
                 if (day == "Mañana")
                 {
                     Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                    GetWeater(latitude, longitude,"");
+                    //await GetWeather(latitude, longitude, "");
                 }
                 else
                 {
                     Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                    GetWeater(latitude, longitude,"");
+                    //await GetWeather(latitude, longitude, "");
                 }
             }
-            catch(FeatureNotEnabledException)
+            catch (FeatureNotEnabledException)
             {
                 if (day == "Mañana")
                 {
                     Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                    GetWeater("", "","");
+                    //await GetWeather("", "", "");
                 }
                 else
                 {
                     Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                    GetWeater("", "","");
+                    //await GetWeather("", "", "");
                 }
             }
             catch (Exception)
@@ -160,10 +178,12 @@ namespace Clima.ViewModel
                 {
                     string latitude = location.Latitude.ToString().Replace(",", ".");
                     string longitude = location.Longitude.ToString().Replace(",", ".");
+
+                     GetWeather(latitude, longitude, "");
                 }
                 else
                 {
-                    GetWeater("", "", "");
+                     GetWeather("", "", "");
                 }
             }
             catch (Exception ex)
@@ -172,30 +192,14 @@ namespace Clima.ViewModel
             }
         }
 
-        private async Task<string> GetCityFromCoordinates(double latitude, double longitude)
-        {
-            var placemarks = await Geocoding.GetPlacemarksAsync(latitude, longitude);
-            var placemark = placemarks?.FirstOrDefault();
-
-            if (placemark != null)
-            {
-                string city = placemark.Locality;
-                return city;
-            }
-            else
-            {
-                return "Caracas";
-            }
-
-        }
-        private async void GetWeater(string latitude, string longitude, string citySearched)
+        private async void GetWeather(string latitude, string longitude, string citySearched)
         {
             try
             {
                 string location = latitude + "," + longitude;
-                if(latitude == "" || longitude == "")
+                if (latitude == "" || longitude == "")
                 {
-                    if(citySearched == "")
+                    if (citySearched == "")
                     {
                         location = "Caracas";
                     }
@@ -260,25 +264,26 @@ namespace Clima.ViewModel
                             tMaxTemp = maxTempC;
                             tMinTemp = minTempC;
                             tChanceOfRain = tChancOfRain;
+                            TomorrowChanceOfRain = tChancOfRain;
                         }
                     }
 
-                    // Modificamos los campos de la DataWeater que ya creamos con el objeto 'Weater'
+                    // Modificamos los campos de la DataWeather que ya creamos con el objeto 'Weather'
                     City = place;
                     if (Categories[1].Selected == true)
                     {
-                        Weater[0].CurrentTemp = tCurrentTemp;
-                        Weater[0].MaxTemp = tMaxTemp;
-                        Weater[0].MinTemp = tMinTemp;
-                        Weater[0].ChanceOfRain = tChanceOfRain;
+                        Weather[0].CurrentTemp = tCurrentTemp;
+                        Weather[0].MaxTemp = tMaxTemp;
+                        Weather[0].MinTemp = tMinTemp;
+                        Weather[0].ChanceOfRain = tChanceOfRain;
                     }
                     else
                     {
-                        Weater[0].CurrentTemp = currentTemp;
-                        Weater[0].FeelsLike = feelsLike;
-                        Weater[0].MaxTemp = maxTemp;
-                        Weater[0].MinTemp = minTemp;
-                        Weater[0].ChanceOfRain = chanceOfRain;
+                        Weather[0].CurrentTemp = currentTemp;
+                        Weather[0].FeelsLike = feelsLike;
+                        Weather[0].MaxTemp = maxTemp;
+                        Weather[0].MinTemp = minTemp;
+                        Weather[0].ChanceOfRain = chanceOfRain;
                     }
 
                     if (isDay == 1)
@@ -286,191 +291,191 @@ namespace Clima.ViewModel
                         switch (condition)
                         {
                             case "Sunny":
-                                Weater[0].Icon = "sun.png";
+                                Weather[0].Icon = "sun.png";
                                 Wallpaper = "Soleado.jpg";
                                 break;
                             case "Partly cloudy":
-                                Weater[0].Icon = "cloudy.png";
+                                Weather[0].Icon = "cloudy.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Cloudy":
-                                Weater[0].Icon = "cloudy.png";
+                                Weather[0].Icon = "cloudy.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Overcast":
-                                Weater[0].Icon = "cloudy.png";
+                                Weather[0].Icon = "cloudy.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Mist":
-                                Weater[0].Icon = "mist.png";
+                                Weather[0].Icon = "mist.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Patchy rain possible":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Patchy snow possible":
-                                Weater[0].Icon = "snowyDay.png";
+                                Weather[0].Icon = "snowyDay.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Patchy sleet possible":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Patchy freezing drizzle possible":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Thundery outbreaks possible":
-                                Weater[0].Icon = "storm.png";
+                                Weather[0].Icon = "storm.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Blowing snow":
-                                Weater[0].Icon = "blowingSnow.png";
+                                Weather[0].Icon = "blowingSnow.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Blizzard":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Fog":
-                                Weater[0].Icon = "fog.png";
+                                Weather[0].Icon = "fog.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Freezing fog":
-                                Weater[0].Icon = "fog.png";
+                                Weather[0].Icon = "fog.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Patchy light drizzle":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Light drizzle":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Freezing drizzle":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Heavy freezing drizzle":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Patchy light rain":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Light rain":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Moderate rain at times":
-                                Weater[0].Icon = "rainyDay.png";
+                                Weather[0].Icon = "rainyDay.png";
                                 Wallpaper = "Nublado.jpg";
                                 break;
                             case "Moderate rain":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Heavy rain at times":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Heavy rain":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Light freezing rain":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Moderate or heavy freezing rain":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Light sleet":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate or heavy sleet":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy light snow":
-                                Weater[0].Icon = "snowyDay.png";
+                                Weather[0].Icon = "snowyDay.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Light snow":
-                                Weater[0].Icon = "snowyDay.png";
+                                Weather[0].Icon = "snowyDay.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy moderate snow":
-                                Weater[0].Icon = "snowyDay.png";
+                                Weather[0].Icon = "snowyDay.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate snow":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy heavy snow":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Heavy snow":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Ice pellets":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Light rain shower":
-                                Weater[0].Icon = "raining.png";
+                                Weather[0].Icon = "raining.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Moderate or heavy rain shower":
-                                Weater[0].Icon = "raining.png";
+                                Weather[0].Icon = "raining.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Torrential rain shower":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Light sleet showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate or heavy sleet showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Light snow showers":
-                                Weater[0].Icon = "snowyDay.png";
+                                Weather[0].Icon = "snowyDay.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate or heavy snow showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Light showers of ice pellets":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate or heavy showers of ice pellets":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy light rain with thunder":
-                                Weater[0].Icon = "storm.png";
+                                Weather[0].Icon = "storm.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             case "Moderate or heavy rain with thunder":
-                                Weater[0].Icon = "storm.png";
+                                Weather[0].Icon = "storm.png";
                                 Wallpaper = "Lluvia.jpg";
                                 break;
                             default:
-                                Weater[0].Icon = "sun.png";
+                                Weather[0].Icon = "sun.png";
                                 Wallpaper = "Soleado.jpg";
                                 break;
                         }
@@ -480,191 +485,191 @@ namespace Clima.ViewModel
                         switch (condition)
                         {
                             case "Clear":
-                                Weater[0].Icon = "night.png";
+                                Weather[0].Icon = "night.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Partly cloudy":
-                                Weater[0].Icon = "cloudyNight.png";
+                                Weather[0].Icon = "cloudyNight.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Cloudy":
-                                Weater[0].Icon = "cloudyNight.png";
+                                Weather[0].Icon = "cloudyNight.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Overcast":
-                                Weater[0].Icon = "fog.png";
+                                Weather[0].Icon = "fog.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Mist":
-                                Weater[0].Icon = "fog.png";
+                                Weather[0].Icon = "fog.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Patchy rain possible":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Patchy snow possible":
-                                Weater[0].Icon = "blowing.png";
+                                Weather[0].Icon = "blowing.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Patchy sleet possible":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Patchy freezing drizzle possible":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Thundery outbreaks possible":
-                                Weater[0].Icon = "thunderNight.png";
+                                Weather[0].Icon = "thunderNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Blowing snow":
-                                Weater[0].Icon = "blowing.png";
+                                Weather[0].Icon = "blowing.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Blizzard":
-                                Weater[0].Icon = "blizzard.png";
+                                Weather[0].Icon = "blizzard.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Fog":
-                                Weater[0].Icon = "fog.png";
+                                Weather[0].Icon = "fog.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Freezing fog":
-                                Weater[0].Icon = "fog.png";
+                                Weather[0].Icon = "fog.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                             case "Patchy light drizzle":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light drizzle":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Freezing drizzle":
-                                Weater[0].Icon = "blowing.png";
+                                Weather[0].Icon = "blowing.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Heavy freezing drizzle":
-                                Weater[0].Icon = "blowing.png";
+                                Weather[0].Icon = "blowing.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Patchy light rain":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light rain":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate rain at times":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate rain":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Heavy rain at times":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Heavy rain":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light freezing rain":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate or heavy freezing rain":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light sleet":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate or heavy sleet":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy light snow":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Light snow":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy moderate snow":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Moderate snow":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Patchy heavy snow":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Heavy snow":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Ice pellets":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "Snowy.jpg";
                                 break;
                             case "Light rain shower":
-                                Weater[0].Icon = "rainyNight.png";
+                                Weather[0].Icon = "rainyNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate or heavy rain shower":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Torrential rain shower":
-                                Weater[0].Icon = "heavyRain.png";
+                                Weather[0].Icon = "heavyRain.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light sleet showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate or heavy sleet showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light snow showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate or heavy snow showers":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Light showers of ice pellets":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate or heavy showers of ice pellets":
-                                Weater[0].Icon = "sleet.png";
+                                Weather[0].Icon = "sleet.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Patchy light rain with thunder":
-                                Weater[0].Icon = "thunderNight.png";
+                                Weather[0].Icon = "thunderNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             case "Moderate or heavy rain with thunder":
-                                Weater[0].Icon = "thunderNight.png";
+                                Weather[0].Icon = "thunderNight.png";
                                 Wallpaper = "rainyNight.jpg";
                                 break;
                             default:
-                                Weater[0].Icon = "night.png";
+                                Weather[0].Icon = "night.png";
                                 Wallpaper = "Noche.jpg";
                                 break;
                         }
@@ -684,9 +689,55 @@ namespace Clima.ViewModel
         }
         public void Search()
         {
-            GetWeater("", "", CitySearched);
+             GetWeather("", "", CitySearched);
         }
-        
+        public async void ScheduleNotification()
+        {
+            GetWeather("","","");
+            try
+            {
+                if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+                {
+                    var status = await Permissions.RequestAsync<NotificationPerms>();
+                    if (status != PermissionStatus.Granted)
+                    {
+                        await DisplayAlert("Permiso de notificaciones", "No se ha podido acceder al permiso de notificaciones por lo que no se podrán mostrar las mismas", "Ok");
+                        return;
+                    }
+                }
+                var tomorrowAt10PM = DateTime.Today.AddDays(1).Date.AddHours(22);
+                var androidOptions = new AndroidOptions()
+                {
+                    IconLargeName = new AndroidIcon("mainIcon"),
+                    IconSmallName = new AndroidIcon("mainIcon")
+                };
+
+                var notification = new NotificationRequest
+                {
+                    BadgeNumber = 1,
+                    //Tengo que encontrar la forma de extraer el valor del porcentaje de lluvia
+                    Description = TomorrowChanceOfRain,
+                    Title = "Clima para mañana",
+                    ReturningData = Weather[0].ChanceOfRain + "%",
+                    NotificationId = 28,
+                    Schedule =
+                {
+                    NotifyTime = DateTime.Now.AddSeconds(10)
+                },
+                    Android = androidOptions
+                };
+
+                await LocalNotificationCenter.Current.Show(notification);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+
         #endregion
         #region COMANDOS
         public ICommand ProcesoAsyncommand => new Command(async () => await ProcesoAsyncrono());
