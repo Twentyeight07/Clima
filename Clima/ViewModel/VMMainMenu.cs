@@ -686,6 +686,7 @@ namespace Clima.ViewModel
         {
             GetWeater("", "", CitySearched);
         }
+        
         #endregion
         #region COMANDOS
         public ICommand ProcesoAsyncommand => new Command(async () => await ProcesoAsyncrono());

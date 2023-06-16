@@ -19,7 +19,6 @@ namespace Clima.Droid
         {
             base.OnCreate(savedInstanceState);
             StartActivity(new Intent(Application.Context, typeof(MainActivity)));
-            // Create your application here
         }
     }
 }
