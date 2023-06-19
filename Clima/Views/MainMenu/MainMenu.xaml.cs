@@ -17,6 +17,7 @@ namespace Clima.Views.MainMenu
         {
             InitializeComponent();
             BindingContext = new VMMainMenu(Navigation);
+            new VMMainMenu(Navigation).ScheduleNotification();
         }
     }
 }

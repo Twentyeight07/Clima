@@ -28,7 +28,7 @@ namespace Clima.ViewModel
         string _CitySearched;
         string _DateTime;
         string _Wallpaper;
-        string _TomorrowChanceOfRain;
+        int _TomorrowChanceOfRain;
         ObservableCollection<Mday> _Categories;
         ObservableCollection<MWeather> _Weather;
         #endregion
@@ -39,7 +39,6 @@ namespace Clima.ViewModel
             ListCategories();
             SetDateTime("Hoy");
             ListWeather();
-            ScheduleNotification();
         }
 
 
@@ -74,12 +73,7 @@ namespace Clima.ViewModel
         {
             get { return _CitySearched; }
             set { SetValue(ref _CitySearched, value); }
-        }
-        public string TomorrowChanceOfRain
-        {
-            get { return _TomorrowChanceOfRain; }
-            set { SetValue(ref _TomorrowChanceOfRain, value); }
-        }
+        } 
         public class NotificationPerms : Xamarin.Essentials.Permissions.BasePlatformPermission
         {
             public (string androidPermission, bool isRuntime)[] RequiredPermissions => new List<(string androidPermission, bool isRuntime)>
@@ -89,10 +83,6 @@ namespace Clima.ViewModel
         }
         #endregion
         #region PROCESOS
-        public async Task ProcesoAsyncrono()
-        {
-
-        }
         public void ListCategories()
         {
             var function = new Dday();
@@ -138,12 +128,12 @@ namespace Clima.ViewModel
                 if (day == "Mañana")
                 {
                     Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                    //await GetWeather(latitude, longitude, "");
+                     await GetWeather(latitude, longitude, "");
                 }
                 else
                 {
                     Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                    //await GetWeather(latitude, longitude, "");
+                     await GetWeather(latitude, longitude, "");
                 }
             }
             catch (FeatureNotEnabledException)
@@ -151,12 +141,12 @@ namespace Clima.ViewModel
                 if (day == "Mañana")
                 {
                     Datetime = DateTime.Today.AddDays(1).ToString("dddd, d MMMM");
-                    //await GetWeather("", "", "");
+                     await GetWeather("", "", "");
                 }
                 else
                 {
                     Datetime = DateTime.Now.ToString("d MMMM, HH:mm");
-                    //await GetWeather("", "", "");
+                     await GetWeather("", "", "");
                 }
             }
             catch (Exception)
@@ -179,11 +169,11 @@ namespace Clima.ViewModel
                     string latitude = location.Latitude.ToString().Replace(",", ".");
                     string longitude = location.Longitude.ToString().Replace(",", ".");
 
-                     GetWeather(latitude, longitude, "");
+                     await GetWeather(latitude, longitude, "");
                 }
                 else
                 {
-                     GetWeather("", "", "");
+                     await GetWeather("", "", "");
                 }
             }
             catch (Exception ex)
@@ -192,7 +182,7 @@ namespace Clima.ViewModel
             }
         }
 
-        private async void GetWeather(string latitude, string longitude, string citySearched)
+        private async Task GetWeather(string latitude, string longitude, string citySearched)
         {
             try
             {
@@ -259,12 +249,11 @@ namespace Clima.ViewModel
                             var minTempC = forecastDayData["mintemp_c"].ToString();
                             var tChancOfRain = forecastDayData["daily_chance_of_rain"].ToString();
 
-                            // Utilizar los valores como desees
                             tCurrentTemp = avgTempC;
                             tMaxTemp = maxTempC;
                             tMinTemp = minTempC;
                             tChanceOfRain = tChancOfRain;
-                            TomorrowChanceOfRain = tChancOfRain;
+                            _TomorrowChanceOfRain = Convert.ToInt32(tChancOfRain);
                         }
                     }
 
@@ -687,13 +676,12 @@ namespace Clima.ViewModel
                 throw;
             }
         }
-        public void Search()
+        public async void Search()
         {
-             GetWeather("", "", CitySearched);
+             await GetWeather("", "", CitySearched);
         }
         public async void ScheduleNotification()
         {
-            GetWeather("","","");
             try
             {
                 if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
@@ -711,18 +699,26 @@ namespace Clima.ViewModel
                     IconLargeName = new AndroidIcon("mainIcon"),
                     IconSmallName = new AndroidIcon("mainIcon")
                 };
-
+                string description;
+                await GetWeather("", "", "");
+                if (_TomorrowChanceOfRain >= 50)
+                {
+                    description = "Hay posibilidades de lluvia para mañana en Caracas. Recuerda llevar un paraguas contigo";
+                }
+                else
+                {
+                    description = "Las probabilidades de lluvia para mañana en Caracas son bajas. No hay de que preocuparse";
+                }
+                
                 var notification = new NotificationRequest
                 {
                     BadgeNumber = 1,
-                    //Tengo que encontrar la forma de extraer el valor del porcentaje de lluvia
-                    Description = TomorrowChanceOfRain,
+                    Description = description,
                     Title = "Clima para mañana",
-                    ReturningData = Weather[0].ChanceOfRain + "%",
                     NotificationId = 28,
                     Schedule =
                 {
-                    NotifyTime = DateTime.Now.AddSeconds(10)
+                    NotifyTime = tomorrowAt10PM
                 },
                     Android = androidOptions
                 };
@@ -732,7 +728,7 @@ namespace Clima.ViewModel
             catch (Exception ex)
             {
 
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("HA OCURRIDO UN ERROR!!!! Error: "+ex.Message+ ex.Source);
             }
 
         }
@@ -740,7 +736,6 @@ namespace Clima.ViewModel
 
         #endregion
         #region COMANDOS
-        public ICommand ProcesoAsyncommand => new Command(async () => await ProcesoAsyncrono());
         public ICommand Searchcommand => new Command(Search);
         public ICommand Selectcommand => new Command<Mday>(Select);
         #endregion
