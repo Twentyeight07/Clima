@@ -156,32 +156,6 @@ namespace Clima.ViewModel
             }
         }
 
-        // La función 'GetLocation' y 'GetCityFromCoordinates' quedan pendientes por eliminar
-        private async void GetLocation()
-        {
-            try
-            {
-                var request = new GeolocationRequest(GeolocationAccuracy.High);
-                var location = await Geolocation.GetLocationAsync(request);
-
-                if (location != null)
-                {
-                    string latitude = location.Latitude.ToString().Replace(",", ".");
-                    string longitude = location.Longitude.ToString().Replace(",", ".");
-
-                     await GetWeather(latitude, longitude, "");
-                }
-                else
-                {
-                     await GetWeather("", "", "");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error" + ex.Message);
-            }
-        }
-
         private async Task GetWeather(string latitude, string longitude, string citySearched)
         {
             try
@@ -205,9 +179,11 @@ namespace Clima.ViewModel
 
                 string apiUrl = string.Format("https://api.weatherapi.com/v1/forecast.json?key={0}&q={1}&days={2}&aqi={3}&alerts={4}", apiKey, location, numberOfDays, aqi, alerts);
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(apiUrl);
-                request.Method = HttpMethod.Get;
+                var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(apiUrl),
+                    Method = HttpMethod.Get
+                };
                 request.Headers.Add("Accept", "application/json");
                 var client = new HttpClient();
                 HttpResponseMessage response = await client.SendAsync(request);
@@ -693,7 +669,7 @@ namespace Clima.ViewModel
                         return;
                     }
                 }
-                var tomorrowAt10PM = DateTime.Today.AddDays(1).Date.AddHours(22);
+                var tomorrowAt10PM = DateTime.Today.Date.AddHours(22);
                 var androidOptions = new AndroidOptions()
                 {
                     IconLargeName = new AndroidIcon("mainIcon"),

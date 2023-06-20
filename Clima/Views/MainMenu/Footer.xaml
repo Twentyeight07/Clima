@@ -5,7 +5,7 @@
     <StackLayout BindableLayout.ItemsSource="{Binding Weather}" 
                  Orientation="Horizontal"
                  Padding="10"
-                 BackgroundColor="#C1C1C1"
+                 BackgroundColor="#434343"
                  Opacity="0.8">
         <BindableLayout.ItemTemplate>
             <DataTemplate>
