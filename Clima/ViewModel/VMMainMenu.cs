@@ -172,7 +172,7 @@ namespace Clima.ViewModel
                         location = citySearched;
                     }
                 }
-                string apiKey = "96d613ae09f948fdbc1183533233105";
+                string apiKey = "YourApiKeyHere";
                 int numberOfDays = 2;
                 string aqi = "no";
                 string alerts = "no";
